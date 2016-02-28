@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+  <_name>Fix printing sequence</_name>
+  <id>L0laapk3.filter.lasercut_sequence</id>
+  <dependency type="executable" location="extensions">lasercut_sequence.py</dependency>
+  <dependency type="executable" location="extensions">inkex.py</dependency>
+  <effect>
+    <object-type>all</object-type>
+    <effects-menu>
+       <submenu _name="Laser cutting"/>
+    </effects-menu>
+  </effect>
+  <script>
+    <command reldir="extensions" interpreter="python">lasercut_sequence.py</command>
+  </script>
+</inkscape-extension>
