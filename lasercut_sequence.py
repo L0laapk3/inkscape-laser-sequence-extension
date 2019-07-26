@@ -50,6 +50,8 @@ class LaserSort(inkex.Effect):
 			else:
 				nonClosedSection = ''
 
+			sections = filter(lambda s: s[0].lower() != 'z', sections)
+
 			
 			sections = sorted(sections, key=getArea)
 
