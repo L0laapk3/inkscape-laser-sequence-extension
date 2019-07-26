@@ -6,6 +6,7 @@ import inkex
 import measure
 import re
 import cubicsuperpath
+from simplepath import parsePath
 # The simplestyle module provides functions for style parsing.
 from simplestyle import *
 
@@ -14,42 +15,48 @@ from simplestyle import *
 
 
 def getArea(path):
-    return abs(measure.csparea(cubicsuperpath.parsePath(path + "z")))
+	return abs(measure.csparea(cubicsuperpath.parsePath(path + "z")))
 
 
 class LaserSort(inkex.Effect):
-    def __init__(self):
-        inkex.Effect.__init__(self)
+	def __init__(self):
+		inkex.Effect.__init__(self)
 
 
 
 
-        
-    def effect(self):
-        elements = self.document.xpath('//svg:path',namespaces=inkex.NSS)
-        for el in elements:
-            oldpathstring = el.attrib['d']
-            paths = oldpathstring.replace("Z", "z").split("z ")
-            if len(paths[-1].strip()) == 0:
-                paths.pop()
-            x = y = 0
-            for i in range(len(paths)):
-                result = re.search(r' ?(m|M) ?(-?[0-9.]+)(?:,| )(-?[0-9.]+) (.).*', paths[i])
-                if result is None:
-                    continue
-                groups = result.groups()
-                if groups[0] == "M":
-                    x = y = 0
-                x += float(groups[1])
-                y += float(groups[2])
-                paths[i] = re.sub(r' ?m ?(-?[0-9.]+),(-?[0-9.]+) ', "M " + str(x) + "," + str(y) + (" l" if (groups[3] in "0123456789.-") else " "), paths[i])
-            
-            paths = sorted(paths, key=getArea)
+		
+	def effect(self):
+		elements = self.document.xpath('//svg:path',namespaces=inkex.NSS)
+		for el in elements:
 
-                
-            newpathstring = "z ".join(paths) + "z "
-            el.set('d', newpathstring)
-        
+			oldpathstring = el.attrib['d']
+
+			nodes = parsePath(oldpathstring)
+
+			currentSection = []
+			sections = [currentSection]
+			for node in nodes:
+				command = node.pop(0)
+				currentSection.append(command + ' ' + ' '.join(map(lambda c: ','.join(map(str, c)), node)))
+				if command.lower() == 'z':
+					currentSection = []
+					sections.append(currentSection)
+			
+			sections = map(lambda n: ' '.join(n), filter(lambda n: len(n) > 0, sections))
+
+			if (sections[-1][-2].lower() != 'z'):
+				nonClosedSection = ' ' + sections.pop()
+			else:
+				nonClosedSection = ''
+
+			
+			sections = sorted(sections, key=getArea)
+
+				
+			newpathstring = "z ".join(sections) + nonClosedSection
+			el.set('d', newpathstring)
+		
 
 
 
