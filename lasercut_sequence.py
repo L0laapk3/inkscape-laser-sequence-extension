@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # We will use the inkex module with the predefined Effect base class.
 import inkex
@@ -13,7 +13,6 @@ from simplestyle import *
 def getArea(path):
 	return abs(measure.csparea(paths.CubicSuperPath(path + "z")))
 
-
 class LaserSort(inkex.Effect):
 	def __init__(self):
 		inkex.Effect.__init__(self)
@@ -21,11 +20,8 @@ class LaserSort(inkex.Effect):
 	def effect(self):
 		elements = self.document.xpath('//svg:path',namespaces=inkex.NSS)
 		for el in elements:
-
 			oldpathstring = el.attrib['d']
-
 			nodes = Path(oldpathstring).to_arrays()
-
 			currentSection = []
 			sections = [currentSection]
 			for node in nodes:
@@ -41,16 +37,11 @@ class LaserSort(inkex.Effect):
 				nonClosedSection = ' ' + sections.pop()
 			else:
 				nonClosedSection = ''
-
-			sections = filter(lambda s: s[0].lower() != 'z', sections)
-
-			
-			sections = sorted(sections, key=getArea)
-
 				
+			sections = filter(lambda s: s[0].lower() != 'z', sections)
+			sections = sorted(sections, key=getArea)
 			newpathstring = "z ".join(sections) + nonClosedSection
 			el.set('d', newpathstring)
 		
 # Create effect instance and apply it.
-effect = LaserSort()
-effect.run()
+LaserSort().run()
