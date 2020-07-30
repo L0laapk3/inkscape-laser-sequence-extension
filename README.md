@@ -10,7 +10,7 @@ The extension exists out of a couple lines of code that will re-arrange the orde
 1. Install the extension
 First, download the required files. this can be done by clicking "download zip" in the top right corner.
 ![download zip](http://i.imgur.com/gFwuinb.png)
-Then you can simply copy the files lasercut_sequence.inx and lasercut_sequence.py into the C:\Program Files\Inkscape\share\extensions folder (or wherever your inkscape installation folder might be.)
+Extract the zip into the inkscape extensions folder (See `Edit > Preferences > System > Inkscape-Extensions`) such that `lasercut_sequence.py` and `lasercut_sequence.inx` are directly in this directory.
 
 2. Apply changes
 Before you print your model, run the extension once. (Extensions > laser cutting > Fix print sequence)
